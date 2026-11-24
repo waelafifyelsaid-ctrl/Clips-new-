@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Clips Stories</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Clips</h1>
+    <label class="add-btn" title="Add your story">
+      <input id="file-input" type="file" accept="image/*,video/*" multiple hidden>
+      <span aria-hidden="true">＋</span><span class="sr-only">Add your story</span>
+    </label>
+  </header>
+
+  <nav class="tray" id="tray" aria-label="Stories"></nav>
+
+  <main class="feed">
+    <p class="hint">Tap a circle to watch a story. Tap the right side to go forward, the left side to go back, and hold to pause. Press ＋ to add your own photos or videos.</p>
+  </main>
+
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Story viewer" hidden>
+    <div class="stage" id="stage">
+      <div class="progress" id="progress"></div>
+      <div class="meta">
+        <img class="meta-avatar" id="meta-avatar" alt="">
+        <span class="meta-name" id="meta-name"></span>
+        <span class="meta-time" id="meta-time"></span>
+        <button class="icon-btn" id="pause-btn" aria-label="Pause">❚❚</button>
+        <button class="icon-btn" id="mute-btn" aria-label="Unmute" hidden>🔇</button>
+        <button class="icon-btn" id="close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="media" id="media"></div>
+      <div class="caption" id="caption"></div>
+      <button class="tap tap-prev" id="tap-prev" aria-label="Previous"></button>
+      <button class="tap tap-next" id="tap-next" aria-label="Next"></button>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
