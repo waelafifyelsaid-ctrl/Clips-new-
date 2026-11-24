@@ -70,10 +70,11 @@ for (const l of Object.values(lights)) scene.add(l);
 scene.add(lights.key.target);
 
 // ---------------------------------------------------------------- post-processing
-const rtColor = new THREE.WebGLRenderTarget(W, H, { samples: 4 });
+export const SS = 1.5;   // supersampling factor
+const rtColor = new THREE.WebGLRenderTarget(W * SS, H * SS, { samples: 4 });
 rtColor.texture.colorSpace = THREE.SRGBColorSpace;
-const rtNormal = new THREE.WebGLRenderTarget(W, H);
-rtNormal.depthTexture = new THREE.DepthTexture(W, H);
+const rtNormal = new THREE.WebGLRenderTarget(W * SS, H * SS);
+rtNormal.depthTexture = new THREE.DepthTexture(W * SS, H * SS);
 const normalMat = new THREE.MeshNormalMaterial();
 
 export const post = {
@@ -83,7 +84,7 @@ export const post = {
 const postMat = new THREE.ShaderMaterial({
   uniforms: {
     tColor: { value: rtColor.texture }, tNormal: { value: rtNormal.texture }, tDepth: { value: rtNormal.depthTexture },
-    res: { value: new THREE.Vector2(W, H) }, k: { value: 0.28 }, edge: { value: 1.0 }, vig: { value: 0.5 }, grain: { value: 0.03 },
+    res: { value: new THREE.Vector2(W * SS, H * SS) }, k: { value: 0.28 }, edge: { value: 1.0 }, vig: { value: 0.5 }, grain: { value: 0.03 },
     sat: { value: 0.92 }, tint: { value: new THREE.Color(1, 1, 1) }, flash: { value: 0 }, flashColor: { value: new THREE.Color() },
     red: { value: 0 }, aberr: { value: 0 }, exposure: { value: 1 }, time: { value: 0 }, near: { value: 0.03 }, far: { value: 400 }, dark: { value: 0 },
   },
@@ -102,7 +103,7 @@ const postMat = new THREE.ShaderMaterial({
         col = vec3(texture2D(tColor, uv + dir).r, texture2D(tColor, uv).g, texture2D(tColor, uv - dir).b); }
       else col = texture2D(tColor, uv).rgb;
       // outlines from depth + normal discontinuities
-      vec2 px = 1.4 / res;
+      vec2 px = 1.9 / res;
       float d0 = lin(texture2D(tDepth, uv).r); vec3 n0 = texture2D(tNormal, uv).rgb;
       float de = 0.0, ne = 0.0;
       for (int i = 0; i < 4; i++) {

@@ -41,7 +41,7 @@ export default function (E) {
   const flash = new THREE.SpotLight(0xfff4e0, 0, 12, 0.5, 0.6, 1.2); E.camera.add(flash); flash.position.set(0.1, -0.1, 0); E.camera.add(flash.target); flash.target.position.set(0, -0.2, -3);
 
   const em = E.actor('EMILIA');
-  const WIN = [1.8, 1.58, 0.25];
+  const WIN = [1.98, 1.58, -0.1];
   // SOS: ... --- ...
   const SOS = [[0, .25], [.5, .25], [1, .25], [1.7, .7], [2.6, .7], [3.5, .7], [4.4, .25], [4.9, .25], [5.4, .25]];
   const sosOn = (t) => { const tt = t % 7.2; return SOS.some(([a, d]) => tt >= a && tt < a + d); };
@@ -62,7 +62,7 @@ export default function (E) {
       init() { pov.setPov('none'); em.root.position.set(-0.2, 0, -0.2); em.root.rotation.y = 0.6; em.pose(chars.POSES.stand); em.expr = 'scared'; candle.intensity = 0; room.fill.intensity = 0.6; },
       update(lt) { room.fill.intensity = lt < 1.2 ? (Math.sin(lt * 40) > 0 ? 0.8 : 0.1) : 0; E.face(em, 0.4, 0.8); E.cam([0.4, 1.6, 0.8], [-0.2, 1.4, -0.2], { fov: 84 }); world(E.T); },
     },
-    { card: ['KEIN STROM. KEIN NETZ.', '21:40 Uhr'], beats: [['sfx', 'boom', { vol: 0.4 }], ['wait', 1.8]], music: 'none', amb: 'night' },
+    { card: ['KEIN STROM. KEIN NETZ.', '21:40 Uhr'], clock: '21:40', beats: [['sfx', 'boom', { vol: 0.4 }], ['wait', 1.8]], music: 'none', amb: 'night' },
     // radio in candlelight
     {
       beats: [['sfx', 'static', { d: 1.2, vol: 0.8 }], ['wait', 1.0],
@@ -140,5 +140,5 @@ export default function (E) {
     },
     { card: ['TEIL 5', 'SOS'], beats: [['wait', 2.2]], music: 'none', amb: 'none', init() { flash.intensity = 0; } },
   ];
-  return { meta: { n: 4, title: 'Kein Netz' }, shots };
+  return { meta: { n: 4, title: 'Kein Netz', clock: { date: '2026-11-24', time: '21:38' } }, shots };
 }

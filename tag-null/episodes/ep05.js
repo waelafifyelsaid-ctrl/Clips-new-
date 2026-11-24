@@ -7,7 +7,7 @@ export default function (E) {
   const opp = sets.oppositeWindowBuilding(20);
   const S = sets.hallAndStairs({ ox: 50 });
   const X = (x, y, z) => [S.ox + x, y, z];
-  const WIN = [1.8, 1.58, 0.25];
+  const WIN = [1.98, 1.58, -0.1];
   const moon = new THREE.DirectionalLight(0x8090c0, 0.6); moon.position.set(30, 40, -20); scene.add(moon);
   const fires = [[110, 16, 30, 5], [150, 22, -40, 7]].map(([x, y, z, s]) => fx.fire(scene, x, y, z, s));
 
@@ -66,7 +66,7 @@ export default function (E) {
       init() { torch.visible = false; lena.root.position.set(0, -60, 0); zb.root.position.set(0, -60, 0); em.root.position.set(1.4, 0, -0.6); em.pose(chars.POSES.stand); em.expr = 'angry'; },
       update(lt) { E.face(em, WIN[0] - 0.1, WIN[2]); E.cam([WIN[0] - 0.1, WIN[1], WIN[2]], [1.4, 1.5, -0.6], { fov: 78 }); },
     },
-    { card: ['00:13 Uhr', 'Treppenhaus'], beats: [['sfx', 'whoosh', { vol: 0.5 }], ['wait', 1.6]], music: 'none', amb: 'none' },
+    { card: ['00:13 Uhr', 'Treppenhaus'], clock: '00:13', date: '2026-11-25', beats: [['sfx', 'whoosh', { vol: 0.5 }], ['wait', 1.6]], music: 'none', amb: 'none' },
     // hall: peephole + Krause in the bathroom
     {
       beats: [['sfx', 'bang', { vol: 0.5 }], ['wait', 0.6], ['say', 'EMILIA', 'Pssst. Er hört uns.', { vol: 0.7 }], ['sfx', 'growl', { d: 2, vol: 0.5 }], ['wait', 1.4], ['text', 'Der Spion. Erst nachschauen.', 2.0], ['wait', 0.4]],
@@ -136,5 +136,5 @@ export default function (E) {
     },
     { card: ['TEIL 6', 'Hinterhaus'], beats: [['wait', 2.2]], music: 'none', amb: 'none', init() { flash.intensity = 0; } },
   ];
-  return { meta: { n: 5, title: 'SOS' }, shots };
+  return { meta: { n: 5, title: 'SOS', clock: { date: '2026-11-24', time: '21:52' } }, shots };
 }

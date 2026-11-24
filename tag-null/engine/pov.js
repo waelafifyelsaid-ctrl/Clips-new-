@@ -57,3 +57,4 @@ export function setPov(name, fromName = null, k = 1, extra = {}) {
 }
 export function setSleeve(color) { SLEEVE.color.set(color); }
 export { g as povGroup };
+setPov('none');

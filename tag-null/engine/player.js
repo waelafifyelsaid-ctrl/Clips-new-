@@ -168,6 +168,25 @@ function drawSubs(g, T) {
   }
 }
 
+// in-story date/time overlay: meta.clock = {date:'2026-11-24', time:'06:45'}; a shot may set clock:'21:40' or date
+const WD = ['SONNTAG', 'MONTAG', 'DIENSTAG', 'MITTWOCH', 'DONNERSTAG', 'FREITAG', 'SAMSTAG'];
+const MO = ['JANUAR', 'FEBRUAR', 'MÄRZ', 'APRIL', 'MAI', 'JUNI', 'JULI', 'AUGUST', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DEZEMBER'];
+function drawClock(g, T) {
+  let base = EP.meta.clock.time, date = EP.meta.clock.date, t0 = 0;
+  for (const sh of EP.shots) { if (sh.start > T) break; if (sh.clock) { base = sh.clock; t0 = sh.start; } if (sh.date) date = sh.date; }
+  const [h, m] = base.split(':').map(Number);
+  const total = h * 3600 + m * 60 + (T - t0) * (EP.meta.clock.speed || 1);
+  const tm = Math.floor(total / 60) % 1440, secs = Math.floor(total) % 60;
+  const d = new Date(date + 'T12:00:00');
+  const l1 = `${WD[d.getDay()]}, ${d.getDate()}. ${MO[d.getMonth()]} ${d.getFullYear()}`;
+  const l2 = `${String(Math.floor(tm / 60)).padStart(2, '0')}:${String(tm % 60).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  g.save(); g.textAlign = 'left'; g.lineJoin = 'round';
+  g.font = '800 22px "DejaVu Sans", sans-serif'; g.lineWidth = 6; g.strokeStyle = 'rgba(0,0,0,0.75)'; g.strokeText(l1, 28, 196); g.fillStyle = '#fff'; g.fillText(l1, 28, 196);
+  g.font = '900 46px "DejaVu Sans Mono", monospace'; g.lineWidth = 8; g.strokeText(l2, 26, 246); g.fillStyle = '#fff'; g.fillText(l2, 26, 246);
+  if (Math.floor(T * 2) % 2 === 0) { g.fillStyle = '#e22'; g.beginPath(); g.arc(282, 230, 9, 0, 7); g.fill(); }
+  g.restore();
+}
+
 function hud(g, T) {
   if (curShot && curShot.hud) curShot.hud(g, T - curShot.start, curShot.d);
   if (curShot && curShot.card) {
@@ -178,9 +197,10 @@ function hud(g, T) {
     if (curShot.card[1]) { g.font = '600 32px "DejaVu Sans", sans-serif'; g.fillStyle = '#bbb'; g.fillText(curShot.card[1], W / 2, H / 2 + 46); }
     g.globalAlpha = 1;
   }
+  if (EP.meta && EP.meta.clock && !(curShot && curShot.card)) drawClock(g, T);
   if (EP.meta && T < 2.6 && !(curShot && curShot.card)) {
     g.globalAlpha = Math.min(1, (2.6 - T) / 0.5); g.textAlign = 'left'; g.font = '800 26px "DejaVu Sans", sans-serif';
-    g.lineWidth = 6; g.strokeStyle = 'rgba(0,0,0,0.8)'; g.strokeText(`TAG NULL · Teil ${EP.meta.n}`, 28, 150); g.fillStyle = '#fff'; g.fillText(`TAG NULL · Teil ${EP.meta.n}`, 28, 150);
+    g.lineWidth = 6; g.strokeStyle = 'rgba(0,0,0,0.8)'; g.strokeText(`TAG NULL · Teil ${EP.meta.n}`, 28, 300); g.fillStyle = '#fff'; g.fillText(`TAG NULL · Teil ${EP.meta.n}`, 28, 300);
     g.globalAlpha = 1;
   }
   drawSubs(g, T);

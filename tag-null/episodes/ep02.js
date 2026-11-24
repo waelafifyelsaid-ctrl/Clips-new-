@@ -145,5 +145,5 @@ export default function (E) {
     },
     { card: ['TEIL 3', 'Krause'], beats: [['wait', 2.2]], music: 'none', amb: 'none' },
   ];
-  return { meta: { n: 2, title: 'Die Tür' }, shots };
+  return { meta: { n: 2, title: 'Die Tür', clock: { date: '2026-11-24', time: '06:53' } }, shots };
 }

@@ -50,7 +50,7 @@ export default function (E) {
         em.root.position.set(p[0] - 0.4, p[1] - 1.6, p[2] + 0.8); em.root.rotation.y = Math.PI; em.pose(chars.walkCycle(lt, 1, true));
       },
     },
-    { card: ['HINTERHOF', '00:21 Uhr'], beats: [['wait', 1.4]], music: 'none', amb: 'night' },
+    { card: ['HINTERHOF', '00:21 Uhr'], clock: '00:21', beats: [['wait', 1.4]], music: 'none', amb: 'night' },
     // courtyard: quiet – a walker at the gate, hide behind the bins
     {
       beats: [['sfx', 'creak', { vol: 0.5 }], ['wait', 1.8], ['say', 'EMILIA', 'Runter! Hinter die Tonnen!', { vol: 0.6 }], ['sfx', 'growl', { off: 0.4, d: 3, vol: 0.6 }], ['sfx', 'heartbeat', { d: 5, vol: 0.9 }], ['wait', 3.0], ['sfx', 'growl', { d: 2, vol: 0.8 }], ['text', 'Er bleibt stehen…', 1.8], ['wait', 1.4], ['text', 'Nicht atmen.', 1.6], ['wait', 1.6]],
@@ -125,5 +125,5 @@ export default function (E) {
     },
     { card: ['TEIL 7', 'Zurück'], beats: [['wait', 2.2]], music: 'none', amb: 'none' },
   ];
-  return { meta: { n: 6, title: 'Hinterhaus' }, shots };
+  return { meta: { n: 6, title: 'Hinterhaus', clock: { date: '2026-11-25', time: '00:14' } }, shots };
 }

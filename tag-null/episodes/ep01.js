@@ -32,7 +32,7 @@ export default function (E) {
 
   // camera anchor points
   const LIE = [bed.x + 0.42, 0.8, bed.z + 0.72];
-  const WIN = [1.78, 1.58, 0.25];
+  const WIN = [1.98, 1.58, -0.1];
   const OUT = [40, -4, -0.2];
 
   const notes = [
@@ -66,7 +66,7 @@ export default function (E) {
         E.cam([WIN[0] + 0.12, WIN[1], WIN[2] - 0.55], [60, 8, -18], { fov: 82, shake: 0.004 });
       },
     },
-    { card: ['3 MINUTEN VORHER', ''], beats: [['sfx', 'boom', { vol: 0.5 }], ['wait', 1.6]], music: 'none', amb: 'none',
+    { card: ['3 MINUTEN VORHER', ''], clock: '06:44', beats: [['sfx', 'boom', { vol: 0.5 }], ['wait', 1.6]], music: 'none', amb: 'none',
       init() { smoke2.g.visible = false; boom.update(-1); debris.update(-1); } },
 
     // ---------------- wake up
@@ -173,14 +173,14 @@ export default function (E) {
         ['sfx', 'explosion_far', { vol: 1.0 }], ['fx', 'flash', { d: 0.7, k: 0.7 }], ['wait', 0.4], ['fx', 'shake', { d: 2.2, k: 1.4 }], ['sfx', 'glass', { off: 0.1, vol: 0.4 }],
         ['sfx', 'scream', { off: 0.1, vol: 0.7, d: 1.0 }], ['fx', 'aberr', { d: 1.4 }], ['sfx', 'tinnitus', { d: 3, vol: 0.8 }], ['wait', 3.4], ['sfx', 'caralarm', { d: 6, vol: 0.6 }], ['sfx', 'crowd_panic', { d: 6, vol: 0.5 }]],
       music: 'none', amb: 'city',
-      init() { emStand(1.5, -0.55, 0); E.face(em, WIN[0], WIN[2]); em.expr = 'scared'; explodeAt = 1e9; },
+      init() { emStand(1.25, -0.95, 0); E.face(em, WIN[0], WIN[2]); em.expr = 'scared'; explodeAt = 1e9; },
       update(lt, d, T) {
         const tb = lt - (this.marks.boom ?? 99);
         if (tb > -0.01 && explodeAt > 1e8) explodeAt = T;
         boom.update(tb * 1.2); debris.update(tb);
         em.pose(tb > 0.3 ? chars.mixPose(chars.POSES.stand, chars.POSES.holdHead, Math.min(1, (tb - 0.3) / 0.4)) : chars.POSES.stand);
-        em.root.position.x = tb > 0.3 ? 1.5 - Math.min(0.35, (tb - 0.3) * 0.8) : 1.5;
-        const look = tb < 0 ? E.key([[0, [1.5, 1.52, -0.55]], [2.4, [1.5, 1.52, -0.55]], [3.2, [60, 10, -20]]], lt) : [80, 12, -25];
+        em.root.position.x = tb > 0.3 ? 1.25 - Math.min(0.35, (tb - 0.3) * 0.8) : 1.25;
+        const look = tb < 0 ? E.key([[0, [1.25, 1.52, -0.95]], [2.4, [1.25, 1.52, -0.95]], [3.2, [60, 10, -20]]], lt) : [80, 12, -25];
         E.cam(WIN, look, { fov: 84, shake: tb > 0 ? 0.01 : 0.004 });
         world(T);
       },
@@ -192,14 +192,14 @@ export default function (E) {
         ['say', 'MAMA', 'Egal was passiert, macht niemandem die Tür auf! Die Leute sind krank, sie…', { fx: 'phone' }],
         ['sfx', 'static', { d: 0.8 }], ['wait', 1.0], ['text', 'Mama? MAMA?', 1.8]],
       music: 'drone', amb: 'city_chaos',
-      init() { emStand(1.0, -0.6, 0, chars.POSES.holdHead); E.face(em, WIN[0] - 0.2, WIN[2]); em.expr = 'sad'; pov.setPov('phone'); },
+      init() { emStand(0.55, -0.95, 0, chars.POSES.holdHead); E.face(em, WIN[0] - 0.2, WIN[2]); em.expr = 'sad'; pov.setPov('phone'); },
       update(lt, d) {
         const callAt = 3.6;
         pov.setPov('phone', 'none', Math.min(1, Math.max(0, (lt - 2.4) / 0.6)));
         if (lt < 2.4) pov.setPov('none');
         E.phone((g) => lt < callAt + 0.8 ? E.ui.call(g, 'Mama ❤', 'eingehender Anruf') : (lt > d - 2.6 ? E.ui.call(g, 'Mama ❤', 'Verbindung unterbrochen') : E.ui.call(g, 'Mama ❤', '00:0' + Math.floor(lt - callAt))));
         em.pose(lt > 2 ? chars.POSES.stand : chars.POSES.holdHead);
-        const look = lt < 2.4 ? [1.0, 1.48, -0.6] : [1.1, 1.05, -0.4];
+        const look = lt < 2.4 ? [0.55, 1.48, -0.95] : [0.9, 1.0, -0.5];
         E.cam(WIN.map((v, i) => i === 0 ? v - 0.2 : v), look, { fov: 84, shake: 0.006 });
         world(E.T); boom.update(-1);
       },
@@ -241,5 +241,5 @@ export default function (E) {
   // asleep: closed eyes while lying in bed
   const orig = em.updateFace.bind(em);
   em.updateFace = (t) => { if (em.wrap && em.wrap.position.y > 0.5) { em.blinkOff = -t + 0.05; } orig(t); };
-  return { meta: { n: 1, title: 'Der Morgen' }, shots };
+  return { meta: { n: 1, title: 'Der Morgen', clock: { date: '2026-11-24', time: '06:47' } }, shots };
 }

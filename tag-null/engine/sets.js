@@ -94,7 +94,7 @@ export function car(parent, x, y, z, color = 0xb05050, ry = 0, s = 1) {
 // ---------------------------------------------------------------- apartment
 export function apartmentBedroom(opts = {}) {
   const g = new THREE.Group(); scene.add(g);
-  const RW = 4.2, RH = 2.75, RD = 4.6;
+  const RW = 4.2, RH = 3.1, RD = 4.6;
   const night = !!opts.night;
   mesh(box(RW, 0.1, RD), toon(0xffffff, { map: planks() }), 0, -0.05, 0, g);
   mesh(box(RW, 0.1, RD), toon(0xe6e1d8), 0, RH + 0.05, 0, g);
@@ -154,7 +154,8 @@ export function apartmentBedroom(opts = {}) {
   const rug = canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#d9cbb0'; c.fillRect(0, 0, w, h); c.strokeStyle = '#7a5a48'; c.lineWidth = 8; c.strokeRect(14, 14, w - 28, h - 28); });
   mesh(box(1.5, 0.01, 1.0), toon(0xffffff, { map: rug }), -0.9, 0.006, -0.3, g, { cast: false });
   // ceiling lamp
-  mesh(cyl(0.3, 0.3, 0.05, 24), toon(0xf4efe4), 0, RH - 0.03, 0, g);
+  mesh(cyl(0.2, 0.22, 0.06, 24), toon(0xf4efe4), 0, RH - 0.03, 0, g);
+  mesh(cyl(0.05, 0.05, 0.02, 12), toon(0xc8c0b0), 0, RH - 0.005, 0, g);
 
   // outside
   const outside = new THREE.Group(); outside.position.set(RW / 2, 0, 0); outside.rotation.y = Math.PI / 2; g.add(outside);
@@ -175,7 +176,7 @@ export function clearScene(keep = []) {
 export function hallAndStairs(opts = {}) {
   const ox = opts.ox ?? 50;
   const g = new THREE.Group(); g.position.set(ox, 0, 0); scene.add(g);
-  const RH = 2.75;
+  const RH = 3.1;
   const wp = toon(0xffffff, { map: wallpaper('#d6cfc2', [2, 2]) });
   const floor = toon(0xffffff, { map: planks(['#a8784a', '#b38250', '#9f7044'], [1, 3]) });
   // corridor x[-0.75,0.75], z[-5,0.5]
@@ -211,8 +212,8 @@ export function hallAndStairs(opts = {}) {
   mesh(box(1.8, 0.1, 1.6), bm, 1.7, -0.05, -3.9, g); mesh(box(0.1, RH, 1.6), bm, 2.6, RH / 2, -3.9, g);
   mesh(box(1.8, RH, 0.1), bm, 1.7, RH / 2, -4.7, g); mesh(box(1.8, RH, 0.1), bm, 1.7, RH / 2, -3.1, g); mesh(box(1.8, 0.1, 1.6), bm, 1.7, RH, -3.9, g);
   mesh(box(0.6, 0.45, 0.45), toon(0xf4f4f4), 2.3, 0.6, -3.5, g);
-  const lampH = new THREE.PointLight(0xffe2b0, 1.4, 6, 1.2); lampH.position.set(0, 2.5, -2.5); g.add(lampH);
-  mesh(sph(0.12, 12, 8), flat(0xfff0cc), 0, 2.62, -2.5, g, { cast: false });
+  const lampH = new THREE.PointLight(0xffe2b0, 1.4, 6, 1.2); lampH.position.set(0, RH - 0.3, -2.5); g.add(lampH);
+  mesh(sph(0.1, 12, 8), flat(0xfff0cc), 0, RH - 0.12, -2.5, g, { cast: false }).scale.set(1, 0.5, 1);
   // runner rug
   const rugT = canvasTex(64, 256, (c, w, h) => { c.fillStyle = '#7a2e2e'; c.fillRect(0, 0, w, h); c.fillStyle = '#d9b46a'; for (let y = 10; y < h; y += 28) c.fillRect(14, y, w - 28, 6); });
   mesh(box(0.8, 0.01, 3.6), toon(0xffffff, { map: rugT }), 0, 0.006, -2.6, g, { cast: false });
@@ -246,8 +247,9 @@ export function hallAndStairs(opts = {}) {
   mesh(box(0.24, 0.06, 0.01), toon(0xffffff, { map: nameB }), -1.4, -1.0, -8.13, g);
   // window on back wall + dim stair light
   mesh(box(1.0, 1.3, 0.12), toon(0x9fb7c9), 0.8, 2.4, -8.2, g);
-  const lampS = new THREE.PointLight(0xfff0d0, 1.6, 9, 1.2); lampS.position.set(0, 2.6, -6.6); g.add(lampS);
-  mesh(sph(0.14, 12, 8), flat(0xfff2d0), 0, 2.75, -6.6, g, { cast: false });
+  const lampS = new THREE.PointLight(0xfff0d0, 1.6, 9, 1.2); lampS.position.set(0, 3.6, -6.6); g.add(lampS);
+  mesh(sph(0.14, 12, 8), flat(0xfff2d0), 0, 3.8, -6.6, g, { cast: false });
+  mesh(cyl(0.008, 0.008, 2.2, 6), toon(0x222222), 0, 4.9, -6.6, g);
   const lampLow = new THREE.PointLight(0xffe0b0, 0.8, 6, 1.4); lampLow.position.set(0, -0.4, -6.6); g.add(lampLow);
   return { group: g, ox, doorPivot, chain, lampH, lampS, lampLow, doorZ: -5, bathDoor };
 }
