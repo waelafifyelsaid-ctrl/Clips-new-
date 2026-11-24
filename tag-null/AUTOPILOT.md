@@ -34,3 +34,11 @@ Diese Datei ist die Arbeitsanweisung für die geplante Claude-Sitzung, die regel
 - Abstand der Kamera zu Gesichtern: mindestens 0,7 m, außer bei bewussten Großaufnahmen.
 - Musik und Ambient passend zur Stimmung setzen. Die Spannung baut sich zum Ende auf: `riser` → `boom` → Schwarzbild.
 - Keine neuen Abhängigkeiten aus dem Internet außer denen in `setup.sh`.
+
+## Häufige Fehler (aus Zuschauer-Feedback)
+- **Figuren laufen durch Möbel, Wände oder Türen.** Laufwege als Wegpunkte um Hindernisse herum anlegen, zum Beispiel um das Bett herum statt quer darüber. Eine Tür muss offen sein, solange jemand hindurchgeht, und in der Wand muss dort ein echtes Loch sein.
+- **Figuren tauchen aus dem Nichts auf.** Startpunkte müssen im begehbaren Raum liegen, nicht hinter einer Wand. Auf Treppen die Höhe aus der Stufenposition berechnen (siehe `stairY` in ep02).
+- **Requisiten, die erst später gebraucht werden** (Hubschrauber, Fahrzeuge), stehen bis zu ihrem Auftritt weit weg (`y = -500`), nie am Ursprung.
+- **Beim Blick nach unten verdeckt das eigene Fensterbrett das Bild.** Für solche Blicke die Kamera aus dem Fenster lehnen lassen (`LEAN` in ep01).
+- **Figuren laufen rückwärts.** `rotation.y = 0` heißt Blick in +z. Beim Gehen immer in Laufrichtung drehen.
+- **Prüfen mit Kontaktbogen:** `NODE_PATH=$(npm root -g) node engine/sheet.cjs epNN "t1,t2,…" out.jpg` rendert beliebige Zeitpunkte. Bewegungen in Abständen von 0,4 s prüfen.
