@@ -11,7 +11,7 @@ export default function (E) {
   // --- cast
   const em = E.actor('EMILIA');
   const emHead = [bed.x - 0.42, 0.74, bed.z + 0.8];
-  function emInBed() { chars.layDown(em, bed.x - 0.42, 0.7, bed.z + 0.8 - 1.62, Math.PI, Math.PI / 2 - 0.25); em.pose(chars.POSES.lieSide); }
+  function emInBed() { chars.layDown(em, bed.x - 0.42, 0.7, bed.z + 0.8 - 1.62, Math.PI, Math.PI / 2 - 0.25); em.pose(chars.addPose(chars.POSES.lieSide, { armL: [0.6, 0, 0.3], elbowL: -1.6, armR: [0.9, 0, -0.1], elbowR: -1.2 })); }
   function emStand(x, z, ry, pose = chars.POSES.stand) { chars.standUp(em); em.root.position.set(x, 0, z); em.root.rotation.set(0, ry, 0); em.pose(pose); }
 
   // street people (world coords: street is around x = 14, ground y = -13)
@@ -23,7 +23,7 @@ export default function (E) {
   z2.root.position.set(13.4, -13, 4.6); z2.root.rotation.y = 0.2; z2.pose(chars.POSES.crouch);
 
   // helicopter + explosion + smoke
-  const heli = fx.helicopter(scene); heli.g.scale.setScalar(0.9);
+  const heli = fx.helicopter(scene); heli.g.scale.setScalar(1.3);
   const boom = fx.explosion(scene, 140, 14, -40, 4.2);
   const smoke1 = fx.smokeColumn(scene, 150, 4, 40, 2.2);
   const smoke2 = fx.smokeColumn(scene, 145, 10, -42, 2.8);
@@ -63,7 +63,7 @@ export default function (E) {
       init() { emStand(1.2, -0.85, Math.PI / 2 + 0.3, chars.POSES.holdHead); em.expr = 'scared'; pov.setPov('none'); boom.update(-1); },
       update(lt) {
         const t = lt - 0.5; boom.update(t * 1.3); debris.update(t); smoke2.g.visible = true; smoke2.update(E.T); smoke1.update(E.T);
-        E.cam([WIN[0] + 0.15, WIN[1], WIN[2] - 0.35], [60, 8, -14], { fov: 86, shake: 0.004 });
+        E.cam([WIN[0] + 0.12, WIN[1], WIN[2] - 0.55], [60, 8, -18], { fov: 82, shake: 0.004 });
       },
     },
     { card: ['3 MINUTEN VORHER', ''], beats: [['sfx', 'boom', { vol: 0.5 }], ['wait', 1.6]], music: 'none', amb: 'none',
@@ -146,8 +146,8 @@ export default function (E) {
       update(lt) {
         street(lt + 7.0);
         const hz = -70 + lt * 22;
-        heli.g.position.set(19, 3.5 - lt * 0.1, hz); heli.g.rotation.set(0.08, -Math.PI / 2, 0.06);
-        const look = E.key([[0, [19, 3, -40]], [2.5, [19, 3.5, -12]], [4.5, [19, 3, 20]], [6.2, [24, 3, 50]]], lt);
+        heli.g.position.set(13, 6 - lt * 0.1, hz); heli.g.rotation.set(0.08, -Math.PI / 2, 0.06);
+        const look = E.key([[0, [13, 5, -40]], [2.5, [13, 5.5, -12]], [4.5, [13, 5, 20]], [6.2, [18, 5, 50]]], lt);
         E.cam(WIN, look, { fov: 85, shake: 0.006 });
         world(E.T);
       },
@@ -229,7 +229,7 @@ export default function (E) {
       init() { pov.setPov('none'); emStand(0.2, -1.0, -Math.PI * 0.75, chars.POSES.reach); em.expr = 'scared'; },
       update(lt) {
         const look = E.key([[0, [12, -10, 0]], [0.6, [-1.0, 1.1, -2.3]]], lt);
-        const pos = E.key([[0, WIN], [3.0, [1.0, 1.6, 0.1]], [6.5, [0.4, 1.6, -0.7]]], lt);
+        const pos = E.key([[0, WIN], [3.0, [1.1, 1.6, 0.2]], [6.5, [0.85, 1.6, -0.25]]], lt);
         E.cam(pos, look, { fov: 84, shake: 0.008 });
         em.root.position.set(0.25 + Math.sin(lt) * 0.02, 0, -0.95); em.root.rotation.y = Math.atan2(pos[0] - 0.25, pos[2] + 0.95);
         em.pose(chars.POSES.reach);

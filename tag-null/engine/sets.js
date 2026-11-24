@@ -110,7 +110,7 @@ export function apartmentBedroom(opts = {}) {
   mesh(box(0.1, RH - 2.4, 2.0), wp, wx, 2.4 + (RH - 2.4) / 2, -0.1, g);
   const frame = toon(0xf1eee8);
   for (const [y, h] of [[0.8, 0.08], [2.4, 0.08], [2.05, 0.06]]) mesh(box(0.16, h, 2.0), frame, wx, y, -0.1, g);
-  for (const z of [-1.1, -0.1, 0.9]) mesh(box(0.16, 1.6, z === -0.1 ? 0.05 : 0.07), frame, wx, 1.6, z, g);
+  for (const z of [-1.1, 0.9]) mesh(box(0.16, 1.6, 0.07), frame, wx, 1.6, z, g);
   mesh(box(0.35, 0.05, 2.1), frame, wx - 0.12, 0.8, -0.1, g);  // sill
   // glass (subtle)
   noOutline(mesh(box(0.02, 1.6, 2.0), new THREE.MeshBasicMaterial({ color: 0xbfd6ea, transparent: true, opacity: 0.08 }), wx, 1.6, -0.1, g, { cast: false }));
@@ -220,30 +220,83 @@ export function hallAndStairs(opts = {}) {
   // stairwell: landing z[-8.2,-5.1], x[-2.4,2.4]
   const sw = toon(0xffffff, { map: wallpaper('#b9b3a3', [3, 2]) });
   const tile = canvasTex(256, 256, (c, w, h) => { for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { c.fillStyle = (x + y) % 2 ? '#d9d2c2' : '#6a5a4a'; c.fillRect(x * 32, y * 32, 32, 32); } }, [4, 3]);
-  mesh(box(4.8, 0.1, 3.2), toon(0xffffff, { map: tile }), 0, -0.05, -6.65, g);
+  // upper landing floor (left part) – the right part (x>0.9) is the open stair well
+  mesh(box(3.3, 0.1, 3.2), toon(0xffffff, { map: tile }), -0.75, -0.05, -6.65, g);
+  mesh(box(1.5, 0.1, 0.25), toon(0xffffff, { map: tile }), 1.65, -0.05, -5.2, g);
   mesh(box(4.8, 0.1, 3.2), toon(0xd8d2c6), 0, 6.0, -6.65, g);
-  mesh(box(4.8, 6, 0.1), sw, 0, 3, -8.25, g);
-  mesh(box(0.1, 6, 3.2), sw, -2.45, 3, -6.65, g);
-  mesh(box(0.1, 6, 3.2), sw, 2.45, 3, -6.65, g);
-  // neighbour door (left) and stairs going down on the right
+  mesh(box(4.8, 8.8, 0.1), sw, 0, 1.6, -8.25, g);
+  mesh(box(0.1, 8.8, 3.2), sw, -2.45, 1.6, -6.65, g);
+  mesh(box(0.1, 8.8, 3.2), sw, 2.45, 1.6, -6.65, g);
+  // neighbour door (Krause)
   mesh(box(1.0, 2.08, 0.08), toon(0x6a4430), -1.6, 1.04, -8.18, g);
   mesh(box(0.25, 0.08, 0.04), toon(0xd8c890), -1.25, 1.0, -8.12, g);
   const nameT = canvasTex(128, 32, (c) => { c.fillStyle = '#e6dcc0'; c.fillRect(0, 0, 128, 32); c.fillStyle = '#222'; c.font = 'bold 20px sans-serif'; c.fillText('KRAUSE', 22, 23); });
   mesh(box(0.24, 0.06, 0.01), toon(0xffffff, { map: nameT }), -1.6, 1.6, -8.13, g);
-  // stair hole: steps going down along -z on the right side x[0.9,2.4]
+  // flight of stairs down along -z in the well (x 0.95..2.4): 10 steps, 0.26 high, 0.27 deep
   const step = toon(0x8a6040);
-  for (let i = 0; i < 14; i++) mesh(box(1.4, 0.18, 0.28), step, 1.7, -0.09 - i * 0.18, -5.3 - i * 0.28 + 0.0, g);
-  for (let i = 0; i < 10; i++) mesh(box(1.4, 0.18, 0.28), step, 1.7, 0.09 + i * 0.18, -8.0 + i * 0.0 - 0.0, g).position.set(1.7, 0.09 + i * 0.18, -7.9 + i * 0.0);
-  // railing
+  for (let i = 0; i < 10; i++) mesh(box(1.45, 0.26, 0.27), step, 1.68, -0.13 - i * 0.26, -5.45 - i * 0.27, g);
+  // railing along the inner edge of the well
   const rail = toon(0x4a2e1e);
   mesh(box(0.08, 0.08, 3.0), rail, 0.9, 1.0, -6.6, g);
   for (let i = 0; i < 12; i++) mesh(box(0.03, 0.95, 0.03), toon(0x2a2a2a), 0.9, 0.5, -5.2 - i * 0.25, g);
-  // lower floor landing (visible through stair hole)
-  mesh(box(2.0, 0.1, 3.4), toon(0xffffff, { map: tile }), 1.6, -2.6, -6.6, g);
+  // lower landing (2nd floor) under everything
+  mesh(box(4.8, 0.1, 3.4), toon(0xffffff, { map: tile }), 0, -2.65, -6.6, g);
+  mesh(box(1.0, 2.08, 0.08), toon(0x5a3a2a), -1.4, -1.56, -8.18, g);
+  const nameB = canvasTex(128, 32, (c) => { c.fillStyle = '#e6dcc0'; c.fillRect(0, 0, 128, 32); c.fillStyle = '#222'; c.font = 'bold 20px sans-serif'; c.fillText('BERGER', 18, 23); });
+  mesh(box(0.24, 0.06, 0.01), toon(0xffffff, { map: nameB }), -1.4, -1.0, -8.13, g);
   // window on back wall + dim stair light
   mesh(box(1.0, 1.3, 0.12), toon(0x9fb7c9), 0.8, 2.4, -8.2, g);
   const lampS = new THREE.PointLight(0xfff0d0, 1.6, 9, 1.2); lampS.position.set(0, 2.6, -6.6); g.add(lampS);
   mesh(sph(0.14, 12, 8), flat(0xfff2d0), 0, 2.75, -6.6, g, { cast: false });
-  const lampLow = new THREE.PointLight(0xffe0b0, 0.8, 6, 1.4); lampLow.position.set(1.6, -0.8, -6.6); g.add(lampLow);
+  const lampLow = new THREE.PointLight(0xffe0b0, 0.8, 6, 1.4); lampLow.position.set(0, -0.4, -6.6); g.add(lampLow);
   return { group: g, ox, doorPivot, chain, lampH, lampS, lampLow, doorZ: -5, bathDoor };
+}
+
+// building across the street with one open, dark window (Lena's)
+export function oppositeWindowBuilding(FX0 = 20) {
+  const opp = new THREE.Group(); scene.add(opp);
+  const wallM = toon(0x4a4658), darkM = toon(0x0e0e14);
+  mesh(box(0.4, 17.6, 30), wallM, FX0, -4.2, -16.6, opp); mesh(box(0.4, 17.6, 30), wallM, FX0, -4.2, 15.4, opp);
+  mesh(box(0.4, 13.6, 1.0), wallM, FX0, -6.2, -0.1, opp); mesh(box(0.4, 1.6, 1.0), wallM, FX0, 3.9, -0.1, opp); mesh(box(6, 0.3, 62), toon(0x2a2632), FX0 + 3, 4.75, -0.6, opp);
+  mesh(box(3, 0.2, 2.4), darkM, FX0 + 1.5, 0.6, -0.1, opp); mesh(box(3, 0.2, 2.4), darkM, FX0 + 1.5, 3.0, -0.1, opp);
+  mesh(box(0.2, 2.6, 2.4), darkM, FX0 + 3, 1.8, -0.1, opp); mesh(box(3, 2.6, 0.2), darkM, FX0 + 1.5, 1.8, -1.2, opp); mesh(box(3, 2.6, 0.2), darkM, FX0 + 1.5, 1.8, 1.0, opp);
+  mesh(box(0.5, 0.08, 1.1), toon(0x8a8a90), FX0 - 0.15, 0.62, -0.1, opp);
+  for (let i = 0; i < 12; i++) for (let j = 0; j < 4; j++) if (!(i === 5 && j === 2)) {
+    const lit = (i * 7 + j * 3) % 11 === 0 && Math.abs(-12 + i * 2.2) > 5;
+    mesh(box(0.05, 1.3, 0.9), lit ? flat(0xffc860) : toon(0x1c2034), FX0 - 0.22, -11 + j * 4.2 + 0.5, -12 + i * 2.2, opp);
+  }
+  const roomLight = new THREE.PointLight(0x8aa0ff, 2.5, 6, 1.2); roomLight.position.set(FX0 + 1.4, 2.6, -0.1); opp.add(roomLight);
+  return { group: opp, FX0, roomLight };
+}
+
+// night courtyard between front and rear building, centred at (ox,0,0); front door at z=+6 (behind camera), rear door at z=-6, gate on the left (x=-6)
+export function courtyard(ox = 120) {
+  const g = new THREE.Group(); g.position.set(ox, 0, 0); scene.add(g);
+  const cob = canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#4a4a50'; c.fillRect(0, 0, w, h); for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { c.fillStyle = ['#5a5a62', '#55555c', '#60606a'][(x * 3 + y) % 3]; c.beginPath(); c.ellipse(x * 16 + 8 + (y % 2) * 8, y * 16 + 8, 7, 6, 0, 0, 7); c.fill(); } }, [6, 6]);
+  mesh(box(14, 0.1, 14), toon(0xffffff, { map: cob }), 0, -0.05, 0, g);
+  const wallTex = (col) => windowsTex(6, 5, col, 0.06, true);
+  for (const [x, z, w, d, col] of [[0, 7.2, 14, 0.4, '#4d4a5a'], [0, -7.2, 14, 0.4, '#544c56'], [7.2, 0, 0.4, 14, '#47465a']]) {
+    const t = wallTex(col); mesh(box(w, 16, d), toon(0xffffff, { map: t }), x, 8, z, g);
+  }
+  // left wall with gate opening z[-1.5,1.5]
+  mesh(box(0.4, 16, 5.6), toon(0x4a4858), -7.2, 8, -4.4, g); mesh(box(0.4, 16, 5.6), toon(0x4a4858), -7.2, 8, 4.4, g); mesh(box(0.4, 12, 3.0), toon(0x4a4858), -7.2, 10, 0, g);
+  const gate = new THREE.Group(); gate.position.set(-7.2, 0, -1.5); g.add(gate);
+  for (let i = 0; i < 12; i++) mesh(box(0.04, 3.6, 0.04), toon(0x1c1c1c), 0, 1.8, 0.12 + i * 0.25, gate);
+  mesh(box(0.06, 0.06, 3.0), toon(0x1c1c1c), 0, 3.4, 1.5, gate); mesh(box(0.06, 0.06, 3.0), toon(0x1c1c1c), 0, 0.3, 1.5, gate);
+  // street beyond the gate
+  mesh(box(10, 0.1, 30), toon(0x34343c), -12.5, -0.05, 0, g); mesh(box(0.4, 14, 30), toon(0x3e3c4c), -17.5, 7, 0, g);
+  // doors
+  for (const z of [6.98, -6.98]) { mesh(box(1.2, 2.3, 0.1), toon(0x5a3a28), 1.5, 1.15, z, g); mesh(box(0.9, 0.9, 0.12), toon(0x9fb7c9), 1.5, 1.7, z, g); }
+  // props: bins, bikes, tree, lamp
+  const bin = (x, z, c) => { mesh(box(0.7, 1.1, 0.7), toon(c), x, 0.55, z, g); mesh(box(0.75, 0.08, 0.75), toon(0x222222), x, 1.12, z, g); };
+  bin(4.5, 3.5, 0x2a4a2a); bin(5.4, 3.5, 0x2a2a6a); bin(6.3, 3.5, 0x6a5a2a);
+  for (let i = 0; i < 3; i++) { const b = new THREE.Group(); b.position.set(5.6, 0, -2 - i * 0.7); b.rotation.y = Math.PI / 2; g.add(b);
+    for (const sx of [-0.5, 0.5]) mesh(new THREE.TorusGeometry(0.33, 0.03, 6, 20), toon(0x1a1a1a), sx, 0.36, 0, b);
+    mesh(box(1.0, 0.04, 0.04), toon([0xaa2222, 0x2266aa, 0xdddddd][i]), 0, 0.62, 0, b, { rot: [0, 0, 0.3] }); }
+  tree(g, -3.5, 0, -3.5, 0.9);
+  mesh(cyl(0.06, 0.08, 3.4, 8), toon(0x222226), -2, 1.7, 3, g);
+  mesh(sph(0.22, 12, 8), flat(0xffe2a0), -2, 3.5, 3, g, { cast: false });
+  const lamp = new THREE.PointLight(0xffd890, 14, 16, 1.2); lamp.position.set(-2, 3.4, 3); g.add(lamp);
+  const moon = new THREE.DirectionalLight(0x7080b0, 0.5); moon.position.set(10, 30, -10); g.add(moon);
+  return { group: g, ox, gate, lamp };
 }
