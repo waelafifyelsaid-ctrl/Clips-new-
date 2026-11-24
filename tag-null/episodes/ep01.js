@@ -33,6 +33,7 @@ export default function (E) {
   // camera anchor points
   const LIE = [bed.x + 0.42, 0.8, bed.z + 0.72];
   const WIN = [1.98, 1.58, -0.1];
+  const LEAN = [2.42, 1.42, -0.1];   // leaning out of the window to look down at the street
   const OUT = [40, -4, -0.2];
 
   const notes = [
@@ -135,7 +136,8 @@ export default function (E) {
       update(lt) {
         street(lt);
         const look = E.key([[0, [WIN[0] + 3, 1.0, -0.15]], [1.6, [14, -12.5, 2]], [7, [14, -12.8, 6]]], lt);
-        E.cam(WIN, look, { fov: 78, shake: 0.004 });
+        const pos = E.key([[0, WIN], [1.5, LEAN]], lt);
+        E.cam(pos, look, { fov: 78, shake: 0.004 });
         world(E.T);
       },
     },
@@ -148,22 +150,41 @@ export default function (E) {
         const hz = -70 + lt * 22;
         heli.g.position.set(13, 6 - lt * 0.1, hz); heli.g.rotation.set(0.08, -Math.PI / 2, 0.06);
         const look = E.key([[0, [13, 5, -40]], [2.5, [13, 5.5, -12]], [4.5, [13, 5, 20]], [6.2, [18, 5, 50]]], lt);
-        E.cam(WIN, look, { fov: 85, shake: 0.006 });
+        E.cam(E.key([[0, LEAN], [1.2, WIN]], lt), look, { fov: 85, shake: 0.006 });
         world(E.T);
       },
     },
-    // ---------------- Emilia wakes up
+    // ---------------- Emilia wakes up, gets out on HER side and walks around the foot of the bed
     {
-      beats: [['wait', 0.5], ['say', 'EMILIA', 'Was ist das für ein Lärm?'], ['wait', 0.4], ['sfx', 'creak', { vol: 0.4 }], ['wait', 1.2], ['say', 'EMILIA', 'Hey. Was ist los? Rede mit mir.'], ['wait', 0.6]],
+      beats: [['wait', 0.5], ['say', 'EMILIA', 'Was ist das für ein Lärm?'], ['wait', 0.4], ['sfx', 'creak', { vol: 0.4 }], ['sfx', 'steps', { off: 0.6, d: 3.2, vol: 0.45 }], ['wait', 1.4], ['say', 'EMILIA', 'Hey. Was ist los? Rede mit mir.'], ['wait', 0.6]],
       music: 'tension', mvol: 0.7, amb: 'city',
-      init() { emStand(0.2, 0.9, 0, chars.POSES.sit); em.root.position.y = 0.12; E.face(em, WIN[0], WIN[2]); em.expr = 'sad'; },
-      update(lt) {
-        const k = Math.min(1, lt / 3.4);
-        if (lt < 3.4) { em.root.position.set(E.lerp(0.2, 0.6, k), 0.12 * (1 - E.ease(k * 1.4)), E.lerp(0.9, 0.2, k)); em.pose(chars.mixPose(chars.POSES.sit, chars.walkCycle(lt), E.ease((k - 0.3) / 0.7))); }
-        else { em.root.position.set(0.6, 0, 0.2); em.pose(chars.POSES.stand); }
-        E.face(em, WIN[0], WIN[2]);
+      init() { chars.standUp(em); em.expr = 'sad'; },
+      update(lt, d) {
+        const SIT = [-0.32, 0.72], UP = [-0.78, 0.6];
+        const path = [[0, UP], [0.7, [-0.86, -0.05]], [1.5, [-0.62, -0.88]], [3.4, [1.02, -0.92]]];
+        const tw = 1.9;   // walking starts at 1.9 s
+        let head;
+        if (lt < 1.1) {                       // sitting on the edge of the bed
+          em.root.position.set(SIT[0], 0.12, SIT[1]); E.face(em, -3, SIT[1]);
+          em.pose(chars.addPose(chars.POSES.sit, { spine: [0.25, 0, 0], neck: [0.15, 0.5, 0] }));
+          head = [SIT[0], 1.05, SIT[1]];
+        } else if (lt < tw) {                 // standing up
+          const k = E.ease((lt - 1.1) / (tw - 1.1));
+          em.root.position.set(E.lerp(SIT[0], UP[0], k), 0.12 * (1 - k), E.lerp(SIT[1], UP[1], k)); E.face(em, -3, E.lerp(SIT[1], -2, k));
+          em.pose(chars.mixPose(chars.POSES.sit, chars.POSES.stand, k));
+          head = [em.root.position.x, E.lerp(1.05, 1.5, k), em.root.position.z];
+        } else if (lt < tw + 3.4) {           // walking around the foot of the bed
+          const w = lt - tw, p = E.key(path, w), q = E.key(path, Math.min(3.45, w + 0.15));
+          em.root.position.set(p[0], 0, p[1]); E.face(em, q[0] + (q[0] - p[0]) * 5, q[1] + (q[1] - p[1]) * 5);
+          em.pose(chars.walkCycle(w * 1.1));
+          head = [p[0], 1.5, p[1]];
+        } else {
+          const p = path[path.length - 1][1];
+          em.root.position.set(p[0], 0, p[1]); E.face(em, WIN[0], WIN[2]); em.pose(chars.POSES.stand);
+          head = [p[0], 1.5, p[1]];
+        }
         em.expr = lt > 3 ? 'scared' : 'sad';
-        E.cam(WIN, [E.lerp(0.2, 0.6, k), E.lerp(0.95, 1.5, k), E.lerp(0.9, 0.2, k)], { fov: 80, shake: 0.004 });
+        E.cam(WIN, head, { fov: 80, shake: 0.004 });
         world(E.T);
       },
     },
@@ -207,7 +228,8 @@ export default function (E) {
     // ---------------- street: someone gets attacked
     {
       beats: [['wait', 0.6], ['sfx', 'scream', { vol: 0.8, d: 1.6, off: 1.2 }], ['sfx', 'growl', { off: 1.0, vol: 0.8 }], ['wait', 2.6],
-        ['say', 'EMILIA', 'Der… der beißt ihn. Der beißt ihn!'], ['wait', 0.8]],
+        ['say', 'EMILIA', 'Der… der beißt ihn. Der beißt ihn!'], ['wait', 0.5], ['mark', 'look'],
+        ['sfx', 'zombie_scream', { vol: 0.9 }], ['fx', 'aberr', { d: 1.2, k: 1 }], ['fx', 'shake', { d: 0.4, k: 0.6 }], ['wait', 0.6], ['text', 'Er schaut hoch. Zu MIR.', 2.0], ['sfx', 'heartbeat', { d: 2.2, vol: 0.9 }], ['wait', 0.6]],
       music: 'tension', amb: 'city_chaos',
       init() { pov.setPov('none'); emStand(1.55, -0.6, Math.PI / 2, chars.POSES.stand); em.expr = 'scared'; },
       update(lt) {
@@ -215,8 +237,15 @@ export default function (E) {
         runner.root.position.set(14.5, -13, -2 + tt * 3.6); runner.pose(lt < 1.6 ? chars.walkCycle(lt, 1, true) : chars.POSES.fallen);
         if (lt >= 1.6) { chars.layDown(runner, 14.3, -12.85, 3.5, 0.3, 0); runner.pose(chars.POSES.fallen); }
         z1.root.position.set(14.3, -13, -3.6 + Math.min(lt, 1.7) * 4.0); z1.pose(lt < 1.7 ? chars.mixPose(chars.walkCycle(lt, 1, true), chars.POSES.zombie, 0.4) : chars.POSES.crouch);
-        const look = E.key([[0, [14, -12.8, 0]], [2.2, [14.4, -13, 4.5]]], lt);
-        E.cam(WIN, look, { fov: 70, shake: 0.006 });
+        const tl = lt - (this.marks.look ?? 99);
+        let look = E.key([[0, [14, -12.8, 0]], [2.2, [14.4, -13, 4.5]]], lt), fov = 70;
+        if (tl > 0) {   // the zombie lifts its head and stares straight up at the window – snap zoom
+          const k = E.ease(Math.min(1, tl / 0.35));
+          z1.root.rotation.y = E.lerp(0, Math.atan2(LEAN[0] - 14.3, LEAN[2] - 3.2), k);
+          z1.pose(chars.addPose(chars.POSES.crouch, { spine: [-0.35 * k, 0, 0], neck: [-0.9 * k, 0, 0] }));
+          look = [14.3, -12.2, 3.2]; fov = E.lerp(70, 16, k);
+        }
+        E.cam(E.key([[0, WIN], [1.0, LEAN]], lt), look, { fov, shake: tl > 0 ? 0.002 : 0.006 });
         world(E.T);
       },
     },
@@ -229,7 +258,7 @@ export default function (E) {
       init() { pov.setPov('none'); emStand(0.2, -1.0, -Math.PI * 0.75, chars.POSES.reach); em.expr = 'scared'; },
       update(lt) {
         const look = E.key([[0, [12, -10, 0]], [0.6, [-1.0, 1.1, -2.3]]], lt);
-        const pos = E.key([[0, WIN], [3.0, [1.1, 1.6, 0.2]], [6.5, [0.85, 1.6, -0.25]]], lt);
+        const pos = E.key([[0, LEAN], [0.6, WIN], [3.0, [1.1, 1.6, 0.2]], [6.5, [0.85, 1.6, -0.25]]], lt);
         E.cam(pos, look, { fov: 84, shake: 0.008 });
         em.root.position.set(0.25 + Math.sin(lt) * 0.02, 0, -0.95); em.root.rotation.y = Math.atan2(pos[0] - 0.25, pos[2] + 0.95);
         em.pose(chars.POSES.reach);

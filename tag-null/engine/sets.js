@@ -183,12 +183,18 @@ export function hallAndStairs(opts = {}) {
   mesh(box(1.5, 0.1, 5.5), floor, 0, -0.05, -2.25, g);
   mesh(box(1.5, 0.1, 5.5), toon(0xe8e3da), 0, RH + 0.05, -2.25, g);
   mesh(box(0.1, RH, 5.5), wp, -0.8, RH / 2, -2.25, g);
-  mesh(box(0.1, RH, 5.5), wp, 0.8, RH / 2, -2.25, g);
+  // right wall with an opening for the bathroom door (z -4.32..-3.5)
+  mesh(box(0.1, RH, 3.95), wp, 0.8, RH / 2, -1.525, g);
+  mesh(box(0.1, RH, 0.7), wp, 0.8, RH / 2, -4.67, g);
+  mesh(box(0.1, RH - 2.1, 0.82), wp, 0.8, 2.1 + (RH - 2.1) / 2, -3.91, g);
+  mesh(box(0.14, 0.06, 0.9), toon(0xf1ede4), 0.8, 2.1, -3.91, g);
   mesh(box(1.6, RH, 0.1), wp, 0, RH / 2, 0.55, g);
   // front wall with door opening (door width 1.0) at z=-5
   mesh(box(0.3, RH, 0.2), wp, -0.65, RH / 2, -5, g); mesh(box(0.3, RH, 0.2), wp, 0.65, RH / 2, -5, g);
   mesh(box(1.0, RH - 2.1, 0.2), wp, 0, 2.1 + (RH - 2.1) / 2, -5, g);
-  mesh(box(1.1, 2.18, 0.24), toon(0xf1ede4), 0, 1.09, -5, g).scale.set(1, 1, 0.3);
+  // door frame (two jambs + header – the opening itself stays free)
+  for (const x of [-0.53, 0.53]) mesh(box(0.06, 2.16, 0.26), toon(0xf1ede4), x, 1.08, -5, g);
+  mesh(box(1.12, 0.06, 0.26), toon(0xf1ede4), 0, 2.13, -5, g);
   // door pivot on the left side
   const doorPivot = new THREE.Group(); doorPivot.position.set(-0.5, 0, -4.98); g.add(doorPivot);
   const doorTex = canvasTex(128, 256, (c, w, h) => { c.fillStyle = '#7a4e34'; c.fillRect(0, 0, w, h); c.strokeStyle = '#5a3624'; c.lineWidth = 5; c.strokeRect(14, 14, w - 28, h * 0.42); c.strokeRect(14, h * 0.5, w - 28, h * 0.44); });
@@ -238,8 +244,9 @@ export function hallAndStairs(opts = {}) {
   for (let i = 0; i < 10; i++) mesh(box(1.45, 0.26, 0.27), step, 1.68, -0.13 - i * 0.26, -5.45 - i * 0.27, g);
   // railing along the inner edge of the well
   const rail = toon(0x4a2e1e);
-  mesh(box(0.08, 0.08, 3.0), rail, 0.9, 1.0, -6.6, g);
-  for (let i = 0; i < 12; i++) mesh(box(0.03, 0.95, 0.03), toon(0x2a2a2a), 0.9, 0.5, -5.2 - i * 0.25, g);
+  // (gap at z -5.1..-5.5 so people can step from the stairs onto the landing)
+  mesh(box(0.08, 0.08, 2.6), rail, 0.9, 1.0, -6.85, g);
+  for (let i = 0; i < 11; i++) mesh(box(0.03, 0.95, 0.03), toon(0x2a2a2a), 0.9, 0.5, -5.6 - i * 0.25, g);
   // lower landing (2nd floor) under everything
   mesh(box(4.8, 0.1, 3.4), toon(0xffffff, { map: tile }), 0, -2.65, -6.6, g);
   mesh(box(1.0, 2.08, 0.08), toon(0x5a3a2a), -1.4, -1.56, -8.18, g);

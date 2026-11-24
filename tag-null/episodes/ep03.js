@@ -84,13 +84,13 @@ export default function (E) {
       update(lt, d) {
         // Krause stands up and lunges; you push him through the bathroom door
         const rise = Math.min(1, lt / 1.0);
-        const kp = E.key([[0, [0.15, -3.2]], [1.2, [0.15, -3.4]], [2.4, [0.4, -3.75]], [3.4, [1.3, -3.9]]], lt);
+        // you shove him backwards through the open bathroom door; he stumbles deep into the bathroom
+        const kp = E.key([[0, [0.15, -3.2]], [1.2, [0.15, -3.4]], [2.2, [0.4, -3.85]], [2.9, [1.25, -3.9]], [3.4, [1.95, -3.75]]], lt);
         kr.root.position.set(...X(kp[0], 0, kp[1])); E.face(kr, E.camera.position.x, E.camera.position.z);
         kr.pose(rise < 1 ? chars.mixPose(chars.POSES.crouch, chars.POSES.zombie, rise) : chars.addPose(chars.POSES.zombie, { armL: [-0.3, 0, 0], armR: [-0.3, 0, 0], spine: [Math.sin(lt * 9) * 0.1, 0, 0] }));
-        bath(E.key([[0, 0], [2.0, 0], [2.6, 1], [3.5, 1], [3.9, 0]], lt));
-        if (lt > 3.6) kr.root.position.set(0, -50, 0);
-        em.root.position.set(...X(-0.35, 0, -2.5)); E.face(em, S.ox + 0.5, -3.8); em.pose(chars.POSES.holdHead);
-        const p = E.key([[0, X(-0.1, 1.6, -2.4)], [1.4, X(0.0, 1.62, -3.1)], [2.6, X(0.45, 1.6, -3.6)], [4.5, X(0.35, 1.6, -3.4)]], lt);
+        bath(E.key([[0, 0], [2.0, 0], [2.5, 1], [3.5, 1], [3.9, 0]], lt));   // he is past the door leaf before it swings shut
+        em.root.position.set(...X(-0.45, 0, -1.6)); E.face(em, S.ox + 0.5, -3.8); em.pose(chars.POSES.holdHead);
+        const p = E.key([[0, X(-0.25, 1.6, -2.3)], [1.4, X(-0.15, 1.62, -2.7)], [2.6, X(0.25, 1.6, -3.25)], [4.5, X(0.25, 1.6, -3.3)]], lt);
         E.cam(p, E.key([[0, X(0.15, 1.2, -3.4)], [2.4, X(1.0, 1.3, -3.9)], [4.5, X(0.9, 1.3, -3.9)]], lt), { fov: 86, shake: lt < 4 ? 0.025 : 0.01 });
         pov.setPov(lt < 4.2 ? 'guard' : 'reach');
       },

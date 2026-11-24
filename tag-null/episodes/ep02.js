@@ -13,9 +13,11 @@ export default function (E) {
   const DOOR = X(0, 1.6, -4.4);
   function door(open) { S.doorPivot.rotation.y = -open * 1.45; }
   function krOutside(t) { kr.root.position.set(...X(Math.sin(t * 1.3) * 0.06, 0, -5.75)); kr.root.rotation.y = Math.sin(t * 0.8) * 0.15; kr.pose(chars.addPose(chars.POSES.stand, { armR: [-0.6, 0, -0.1], elbowR: -1.3, spine: [0.1, 0, 0] })); kr.expr = 'scared'; }
-  function zwStairs(k) {   // 0 = bottom of stairs, 1 = on the landing
-    const z = E.lerp(-8.9, -5.9, k), y = E.lerp(-2.45, 0, Math.min(1, k * 1.1));
-    zw.root.position.set(...X(1.7 - Math.max(0, k - 0.85) * 6, y, z)); zw.root.rotation.y = k > 0.85 ? -Math.PI / 2 : 0;
+  // feet height on the flight of stairs (top step z -5.32 at y 0, bottom z -8.02 on the lower landing y -2.6)
+  const stairY = (z) => -Math.min(1, Math.max(0, (-5.32 - z) / 2.7)) * 2.6;
+  function zwStairs(k) {   // 0 = lower landing at the foot of the stairs, 0.8 = top step, 1 = on our landing next to the door
+    if (k <= 0.8) { const z = E.lerp(-8.05, -5.3, k / 0.8); zw.root.position.set(...X(1.7, stairY(z), z)); zw.root.rotation.y = 0; }
+    else { const kk = (k - 0.8) / 0.2; zw.root.position.set(...X(E.lerp(1.7, 0.55, kk), 0, -5.3)); zw.root.rotation.y = -Math.PI / 2; }
   }
   function emBehind(pose = chars.POSES.reach, expr = 'scared') { em.root.position.set(...X(-0.15, 0, -2.5)); em.root.rotation.y = Math.PI; em.pose(pose); em.expr = expr; }
 
@@ -70,18 +72,19 @@ export default function (E) {
       music: 'action', amb: 'room',
       init() { pov.setPov('reach'); },
       update(lt) {
-        const open = E.key([[0, 0], [0.9, 0], [1.6, 0.85], [2.6, 0.85], [3.3, 0]], lt); door(open);
+        const open = E.key([[0, 0], [0.9, 0], [1.5, 0.85], [2.6, 0.85], [3.2, 0]], lt); door(open);
         pov.setPov(lt < 2.9 ? 'reach' : 'guard', null, 1);
         // Krause stumbles in past the camera
-        const kp = E.key([[0, [0, -5.75]], [1.5, [0, -5.75]], [2.5, [0.2, -4.4]], [3.2, [0.45, -3.6]]], lt);
-        kr.root.position.set(...X(kp[0], 0, kp[1])); kr.root.rotation.y = Math.PI; kr.pose(lt > 1.5 && lt < 3 ? chars.walkCycle(lt, 1.2) : chars.POSES.stand);
+        // he is through the door frame before the door swings back
+        const kp = E.key([[0, [0, -5.75]], [1.4, [0, -5.75]], [2.1, [0.15, -4.6]], [2.7, [0.42, -3.75]]], lt);
+        kr.root.position.set(...X(kp[0], 0, kp[1])); kr.root.rotation.y = 0.2; kr.pose(lt > 1.4 && lt < 2.7 ? chars.walkCycle(lt * 1.3, 1.2, true) : chars.addPose(chars.POSES.crouch, { spine: [0.5, 0, 0] }));
         // zombie charges across the landing
         zw.pose(chars.mixPose(chars.walkCycle(lt, 1, true), chars.POSES.zombie, 0.5)); zw.expr = 'zombie';
-        const zk = Math.min(1, 0.55 + lt * 0.22); zwStairs(Math.min(0.85, zk));
-        if (lt > 1.9) { zw.root.position.set(...X(E.lerp(1.2, 0.2, Math.min(1, (lt - 1.9) / 1.0)), 0, -5.9)); zw.root.rotation.y = Math.PI * 0.85; }
+        zwStairs(Math.min(1, 0.55 + lt * 0.25));
+        if (lt > 1.8) { const c = Math.min(1, (lt - 1.8) / 1.2); zw.root.position.set(...X(E.lerp(0.55, 0.12, c), 0, E.lerp(-5.3, -5.4, c))); zw.root.rotation.y = E.lerp(-Math.PI / 2, 0, c); }
         const look = lt < 2.2 ? X(0, 1.45, -6) : X(0, 1.4, -5);
         E.cam(X(-0.15, 1.62, -3.3), look, { fov: 88, shake: lt > 2.9 ? 0.02 : 0.008 });
-        if (lt > 3.3) { zw.root.position.set(...X(0.1, 0, -5.4)); }
+        if (lt > 3.0) { zw.root.position.set(...X(0.12, 0, -5.4)); zw.root.rotation.y = 0; }
       },
     },
     // zombie face pressed against the peephole

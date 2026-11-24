@@ -2,7 +2,7 @@
 import { THREE, scene, toon, flat, mesh, box, cyl, sph, cap, noOutline } from './core.js';
 
 export function helicopter(parent = scene, color = 0x2f3a2f) {
-  const g = new THREE.Group(); parent.add(g);
+  const g = new THREE.Group(); g.position.set(0, -500, 0); parent.add(g);   // parked far away until a shot places it
   const c = toon(color);
   mesh(sph(1.4, 20, 14), c, 0, 0, 0, g, { scale: [1.6, 1, 1] });
   mesh(sph(1.0, 16, 12), toon(0x9ab4c4), 1.3, 0.25, 0, g, { scale: [0.9, 0.7, 0.9] });

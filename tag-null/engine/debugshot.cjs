@@ -12,7 +12,7 @@ const srv = require('./serve.cjs')(8890 + Math.floor(Math.random() * 9));
   await p.evaluate((t) => window.setup(t), JSON.parse(fs.readFileSync(path.join(root, 'build', ep, 'timing.json'))));
   const url = await p.evaluate(async ([t, code]) => {
     window.frameAt(Number(t));
-    if (code) eval(code);
+    if (code) await eval('(async()=>{' + code + '})()');
     const core = await import('/engine/core.js');
     return core.renderFrame(Number(t)).toDataURL('image/jpeg', 0.9);
   }, [T, js || '']);
