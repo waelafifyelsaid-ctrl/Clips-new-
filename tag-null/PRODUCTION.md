@@ -27,12 +27,13 @@ Kamera: `E.cam(pos, look, {fov, shake})`. Figuren: `E.actor(NAME, spec)`, `ch.po
 ## Stand
 | Teil | Skript | Video |
 |---|---|---|
-| 1 Der Morgen | ✔ | ✔ (wird mit Korrekturen neu gerendert) |
+| 1 Der Morgen | ✔ | ✔ |
 | 2 Die Tür | ✔ | ✔ |
-| 3 Krause | ✔ | in der Warteschlange |
-| 4 Kein Netz | ✔ | in der Warteschlange |
-| 5 SOS | ✔ | in der Warteschlange |
-| 6–30 | Handlung in STORY.md | offen |
+| 3 Krause | ✔ | ✔ |
+| 4 Kein Netz | ✔ | ✔ |
+| 5 SOS | ✔ | ✔ |
+| 6 Hinterhaus | ✔ | ✔ |
+| 7–30 | Handlung in STORY.md | offen (nächster Schritt: Teil 7 „Zurück“) |
 
 ## Bekannte Grenzen
 - Die Figuren sind aus Grundformen gebaut. Sie wirken stilisiert, nicht so ausgearbeitet wie modellierte Figuren.

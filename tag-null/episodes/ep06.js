@@ -16,7 +16,7 @@ export default function (E) {
   const horde = [];
   const hs = [chars.CAST.ZOMBIE1, chars.CAST.ZOMBIE2, chars.CAST.ZOMBIE3];
   for (let i = 0; i < 9; i++) horde.push(E.actor('H' + i, { ...hs[i % 3], top: [0x5a6a7a, 0x7a4a4a, 0x4a5a3a, 0x6a6a6a, 0x3a3a5a][i % 5], height: 0.92 + (i % 4) * 0.05 }));
-  const flash = new THREE.SpotLight(0xfff4e0, 60, 16, 0.55, 0.5, 1.0); E.camera.add(flash); flash.position.set(0.12, -0.12, 0); E.camera.add(flash.target); flash.target.position.set(0, -0.15, -3);
+  const flash = new THREE.SpotLight(0xfff4e0, 36, 16, 0.55, 0.5, 1.0); E.camera.add(flash); flash.position.set(0.12, -0.12, 0); E.camera.add(flash.target); flash.target.position.set(0, -0.15, -3);
   const bat = new THREE.Group(); mesh(cyl(0.022, 0.035, 0.75, 10), toon(0xb08a5a), 0, 0.3, 0, bat); E.camera.add(bat);
   function batPose(swing = 0) { bat.position.set(0.2 - swing * 0.25, -0.32 + swing * 0.15, -0.42); bat.rotation.set(-0.5 - swing * 1.2, swing * 0.8, -0.3 - swing * 1.4); }
   const hide = (...cs) => cs.forEach(c => c.root.position.set(0, -80, 0));
@@ -78,10 +78,10 @@ export default function (E) {
     {
       beats: [['sfx', 'steps', { d: 4, vol: 0.5 }], ['wait', 2.4], ['text', 'Vierter Stock. Ihre Tür steht offen.', 2.2]],
       music: 'tension', amb: 'none',
-      init() { dark(); flash.intensity = 60; em.root.position.set(0, -80, 0); B.doorPivot.rotation.y = -0.6; },
+      init() { dark(); flash.intensity = 36; em.root.position.set(0, -80, 0); B.doorPivot.rotation.y = -0.6; },
       update(lt) {
         const k = Math.min(1, lt / 3.2); const b = E.walkBob(lt, 0.03, 7);
-        E.cam([B.ox + 1.68 + b[0], E.lerp(-1.0, 1.62, k) + b[1], E.lerp(-8.0, -5.6, k)], XB(0.2, 1.3, -4.6), { fov: 84, shake: 0.007 });
+        E.cam([B.ox + 1.68 + b[0], E.lerp(-1.0, 1.62, k) + b[1], E.lerp(-8.0, -5.6, k)], XB(1.68, 1.5, -4.2), { fov: 84, shake: 0.007 });
       },
     },
     // inside: the father, the bathroom
@@ -89,12 +89,12 @@ export default function (E) {
       beats: [['sfx', 'growl', { d: 3, vol: 0.5 }], ['wait', 1.6], ['say', 'EMILIA', 'Da hinten… das muss ihr Vater sein. Nicht bewegen.', { vol: 0.55 }], ['wait', 1.2], ['say', 'EMILIA', 'Lena? Lena, bist du da? Wir sind die mit der Taschenlampe.', { vol: 0.6 }], ['wait', 0.8], ['sfx', 'click', { vol: 0.5 }],
         ['say', 'LENA', 'Seid ihr echt? Seid ihr nicht krank?', { fx: 'far', vol: 0.9 }], ['say', 'EMILIA', 'Wir sind echt. Mach auf, Süße. Ganz leise.', { vol: 0.6 }], ['sfx', 'lock', { vol: 0.7 }], ['wait', 0.8]],
       music: 'heart', amb: 'none',
-      init() { em.root.position.set(...XB(0.3, 0, -3.6)); em.root.rotation.y = -Math.PI / 2 + 0.3; em.pose(chars.POSES.stand); em.expr = 'scared'; B.bathDoor.rotation.y = 0;
+      init() { em.root.position.set(...XB(0.45, 0, -3.25)); em.root.rotation.y = -Math.PI / 2 + 0.3; em.pose(chars.POSES.stand); em.expr = 'scared'; B.bathDoor.rotation.y = 0;
         lena.root.position.set(...XB(1.4, 0, -3.9)); lena.root.rotation.y = -Math.PI / 2; lena.pose(chars.POSES.stand); lena.expr = 'scared'; },
       update(lt, d) {
         zwalk(dad, lt, B.ox + Math.sin(lt * 0.3) * 0.2, 0.0, Math.PI, 0.2); dad.root.position.z = -0.6 + Math.sin(lt * 0.4) * 0.2;
         B.bathDoor.rotation.y = E.key([[0, 0], [d - 0.8, 0], [d, 0.9]], lt);
-        E.cam(XB(-0.35, 1.62, -4.2), lt < 3 ? XB(0, 1.2, -0.6) : XB(0.8, 1.2, -3.9), { fov: 80, shake: 0.006 });
+        E.cam(XB(-0.45, 1.62, -4.5), lt < 3 ? XB(0, 1.2, -0.6) : XB(0.8, 1.2, -3.9), { fov: 82, shake: 0.006 });
       },
     },
     {

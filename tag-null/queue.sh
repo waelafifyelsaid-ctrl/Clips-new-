@@ -10,3 +10,6 @@ for ep in "$@"; do
 Claude-Session: https://claude.ai/code/session_01UUywnK12Xa8nQ6n3iTsBdK" && (for i in 1 2 3; do git push -q -u origin claude/stories-sjvpcx && break; sleep 10; done); cd tag-null
   fi
 done
+# final sweep: commit any finished videos that were rendered outside this queue
+cd .. && git add tag-null/out/*.mp4 && git commit -q -m "TAG NULL: remaining rendered episodes" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01UUywnK12Xa8nQ6n3iTsBdK" && (for i in 1 2 3; do git push -q -u origin claude/stories-sjvpcx && break; sleep 10; done)
