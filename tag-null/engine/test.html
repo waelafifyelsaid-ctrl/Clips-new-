@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}</style>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js"}}</script></head><body>
+<script type="module">
+import { THREE, camera, renderFrame, post, scene } from '/engine/core.js';
+import { apartmentBedroom, sky } from '/engine/sets.js';
+import { makeChar, CAST, POSES, layDown } from '/engine/characters.js';
+import { setPov, phoneTex } from '/engine/pov.js';
+sky('#86a3cc', '#f3d6b0');
+const room = apartmentBedroom();
+const em = makeChar(CAST.EMILIA); scene.add(em.root);
+layDown(em, room.bed.x - 0.4, 0.69, room.bed.z - 0.75, Math.PI, -1.2);
+em.pose(POSES.lieSide); em.expr='neutral'; em.updateFace(1.0);
+const em2 = makeChar(CAST.EMILIA); scene.add(em2.root); em2.root.position.set(-0.9, 0, -0.9); em2.root.rotation.y = 0.6; em2.pose(POSES.stand); em2.expr='scared'; em2.mouth=0.6; em2.updateFace(1.0);
+const V = new URLSearchParams(location.search).get('v') || '0'; if (V==='0') { camera.position.set(room.bed.x + 0.4, 1.15, room.bed.z + 0.9); camera.lookAt(room.window.x, 1.4, -0.4);} else if (V==='1') { camera.position.set(room.bed.x + 0.45, 0.95, room.bed.z + 0.75); camera.lookAt(room.bed.x - 0.4, 0.75, room.bed.z + 0.3); setPov('none'); } else if (V==='2') { camera.position.set(0.3, 1.5, 1.2); camera.lookAt(-0.9, 1.2, -0.9); } else { setPov('none'); camera.position.set(-0.9+Math.sin(0.6)*0.75, 1.62, -0.9+Math.cos(0.6)*0.75); camera.lookAt(-0.9, 1.55, -0.9); }
+if (V==='0') setPov('phone');
+const g = phoneTex.userData.ctx; g.fillStyle='#223'; g.fillRect(0,0,360,760); g.fillStyle='#fff'; g.font='bold 80px sans-serif'; g.fillText('06:42', 70, 180); phoneTex.needsUpdate = true;
+window.go = (t) => { const t0 = performance.now(); const c = renderFrame(t); return [c.toDataURL('image/jpeg', 0.9), performance.now() - t0]; };
+window.ready = true;
+</script></body></html>
