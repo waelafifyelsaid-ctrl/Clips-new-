@@ -176,6 +176,9 @@ def sfx(name, d=None):
         dd = d or 4; return filt(noise(dd), "low", 80) * env(int(dd * SR), 0.6, 1.2) * 1.4
     if name == "tinnitus":
         dd = d or 3; t = T(dd); return osc(6200, t) * 0.08 * np.exp(-t * 0.6)
+    if name == "flicker":         # electrical buzz/flicker
+        t = T(0.7); x = filt(noise(0.7), "band", [80, 500]) * (np.sin(2 * np.pi * 9 * t) > 0) * 0.5 + osc(100, t) * 0.08
+        return x * env(len(t), 0.01, 0.1)
     if name == "alarm":           # building alarm bell
         dd = d or 4; t = T(dd); return filt(osc(1050, t, "sq") * (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 22 * t))), "band", [600, 4000]) * 0.12
     raise ValueError(name)
