@@ -30,7 +30,7 @@ const OUT = path.join(__dirname, 'out'); fs.mkdirSync(OUT, { recursive: true });
   execFileSync('python3', [path.join(__dirname, 'audio', 'mix.py'), path.join(B, 'cues.json'), path.join(B, 'audio.wav')], { stdio: 'inherit' });
   const mp4 = path.join(OUT, `${ep}.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', '24', '-c:v', 'mjpeg', '-i', '-', '-i', path.join(B, 'audio.wav'),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', mp4], { stdio: ['pipe', 'inherit', 'inherit'] });
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', '24', '-maxrate', '3M', '-bufsize', '6M', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', mp4], { stdio: ['pipe', 'inherit', 'inherit'] });
   const N = Math.ceil(cues.d * 24); const t0 = Date.now();
   for (let i = 0; i < N; i++) {
     const url = await p.evaluate((T) => window.frameAt(T), i / 24);

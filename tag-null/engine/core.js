@@ -77,7 +77,7 @@ rtNormal.depthTexture = new THREE.DepthTexture(W, H);
 const normalMat = new THREE.MeshNormalMaterial();
 
 export const post = {
-  fisheye: 0.28, edge: 1.0, vignette: 0.55, grain: 0.035, sat: 0.92, tint: new THREE.Color(1, 1, 1),
+  fisheye: 0.28, edge: 1.0, vignette: 0.55, grain: 0.018, sat: 0.92, tint: new THREE.Color(1, 1, 1),
   flash: 0, flashColor: new THREE.Color(1, 0.92, 0.75), red: 0, blur: 0, aberr: 0, exposure: 1.0, dark: 0,
 };
 const postMat = new THREE.ShaderMaterial({
